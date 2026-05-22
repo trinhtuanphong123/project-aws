@@ -1,0 +1,26 @@
+services:
+  collector:
+    image: ${ECR_REGISTRY}/vietnam-energy-collector:latest
+    container_name: vietnam-energy-collector
+    env_file:
+      - .env
+    command: ["python", "-m", "app.main", "--mode", "once"]
+    restart: "no"
+
+  trainer:
+    image: ${ECR_REGISTRY}/vietnam-energy-trainer:latest
+    container_name: vietnam-energy-trainer
+    env_file:
+      - .env
+    command: ["python", "-m", "app.main", "--mode", "train-forecast"]
+    restart: "no"
+
+  dashboard:
+    image: ${ECR_REGISTRY}/vietnam-energy-dashboard:latest
+    container_name: vietnam-energy-dashboard
+    env_file:
+      - .env
+    ports:
+      - "8050:8050"
+    command: ["python", "-m", "app.main"]
+    restart: unless-stopped
